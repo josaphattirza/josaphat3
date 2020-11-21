@@ -4,7 +4,7 @@ import requests
 from flask import Flask, redirect, url_for, json, flash, render_template
 from flask_dance.contrib.google import make_google_blueprint, google
 
-from josaphat3.app.forms import FinderForm
+from app.forms import FinderForm
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "supersekrit")
