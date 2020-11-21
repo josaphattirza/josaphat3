@@ -45,6 +45,11 @@ def index():
 
 @app.route("/json_example/<keys>", methods=['GET','POST'])
 def json_example(keys):
+    if not google.authorized:
+        return redirect(url_for("google.login"))
+    resp = google.get("/oauth2/v1/userinfo")
+    assert resp.ok, resp.text
+
     form = FinderForm()
 
     try:
