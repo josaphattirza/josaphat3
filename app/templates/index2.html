@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+    email = {{email}}
+
+    <table class="table table-bordered" id="myTable">
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>title</th>
+            <th>author</th>
+            <th>isbn</th>
+            <th>publisher</th>
+            <th>publication_year</th>
+            <th>last_modified_date</th>
+            <th>created_date TYPE</th>
+            <th>created_at</th>
+            <th>updated_at</th>
+
+        </tr>
+        </thead>
+        <tbody id="mydata">
+            {% for key, value in jsonfile.items() %}
+                <td> {{ value }} </td>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

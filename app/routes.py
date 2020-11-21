@@ -1,26 +1,12 @@
-import os
-
+from flask import jsonify, render_template, redirect, url_for, flash
+from app import app
+from app.forms import FinderForm
 import requests
-from flask import Flask, redirect, url_for, json, flash, render_template
-from flask_dance.contrib.google import make_google_blueprint, google
-
-from josaphat3.app.forms import FinderForm
-
-app = Flask(__name__)
-app.secret_key = os.environ.get("FLASK_SECRET_KEY", "supersekrit")
-app.config["GOOGLE_OAUTH_CLIENT_ID"] = os.environ.get("GOOGLE_OAUTH_CLIENT_ID")
-app.config["GOOGLE_OAUTH_CLIENT_SECRET"] = os.environ.get("GOOGLE_OAUTH_CLIENT_SECRET")
-google_bp = make_google_blueprint(scope=["profile", "email"])
-app.register_blueprint(google_bp, url_prefix="/login")
+import json
 
 @app.route('/', methods=['GET','POST'])
 @app.route('/index', methods=['GET','POST'])
 def index():
-    if not google.authorized:
-        return redirect(url_for("google.login"))
-    resp = google.get("/oauth2/v1/userinfo")
-    assert resp.ok, resp.text
-
     form = FinderForm()
 
     try:
@@ -39,9 +25,8 @@ def index():
         return redirect(url_for('json_example', keys=form.username.data))
 
     # jsonfile type = list
-    return render_template('index.html', jsonfile=Stats(json_list), email=resp.json()["email"], title='Sign In', form=form)
+    return render_template('index.html', jsonfile = Stats(json_list), title='Sign In', form=form)
 
-    return "You are {email} on Google".format(email=resp.json()["email"])
 
 @app.route("/json_example/<keys>", methods=['GET','POST'])
 def json_example(keys):
@@ -63,7 +48,7 @@ def json_example(keys):
         return redirect(url_for('json_example', keys=form.username.data))
 
     # jsonfile type = dict
-    return render_template('index2.html', jsonfile=json_dictionary, email=resp.json()["email"], title='Sign In', form=form)
+    return render_template('index2.html', jsonfile=json_dictionary, title='Sign In', form=form)
 
 
 # test run
@@ -85,3 +70,4 @@ class Stats:
    def __iter__(self):
       for i in self.full_data:
          yield Stat(i)
+
